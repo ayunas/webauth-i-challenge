@@ -4,7 +4,7 @@ module.exports = {
   development: {
     client: "sqlite3",
     connection: {
-      filename: "./authentication.sqlite3"
+      filename: "./data/authentication.sqlite3" //knex assumes you are working from the root directory of the project
     },
     useNullAsDefault: true
   },

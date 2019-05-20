@@ -1,6 +1,11 @@
 const express = require("express");
-
+const cors = require("cors");
+const router = require("./router");
+const bodyParser = express.json();
 const server = express();
+
+server.use(bodyParser, cors());
+server.use("/api", router);
 
 server.get("/", (req, res) => {
   res.status(200).send(`
