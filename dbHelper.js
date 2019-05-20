@@ -15,7 +15,7 @@ function register(newUser) {
 }
 
 function login(username) {
-  return db("users").where({ user: username });
+  return db("users").where({ username: username });
 }
 
 module.exports = {

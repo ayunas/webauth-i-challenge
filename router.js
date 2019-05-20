@@ -2,39 +2,10 @@ const express = require("express");
 const router = express.Router();
 const dbHelper = require("./dbHelper");
 const encrypt = require("bcryptjs");
+const authenticate = require("./authMiddleware");
 
 router.get("/", (req, res) => {
   res.status(200).json({ message: "the router is working" });
-});
-
-router.get("/users", (req, res) => {
-  dbHelper
-    .getUsers()
-    .then(users => {
-      res.status(200).json(users);
-    })
-    .catch(err => {
-      res.status(500).json(err.message);
-    });
-});
-
-router.get("/users/:id", (req, res) => {
-  dbHelper
-    .getUser(req.params.id)
-    .then(user => {
-      if (user) {
-        res.status(200).json(user);
-      } else {
-        res.status(404).json({
-          message: `user with id # ${
-            req.params.id
-          } was not found in the database`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).json(err.message);
-    });
 });
 
 router.post("/register", (req, res) => {
@@ -64,6 +35,36 @@ router.post("/login", (req, res) => {
         res.status(200).json({ message: `Welcome, ${user.username}` });
       } else {
         res.status(401).json({ message: "Invalid Credentials" });
+      }
+    })
+    .catch(err => {
+      res.status(500).json(err.message);
+    });
+});
+
+router.get("/users", authenticate, (req, res) => {
+  dbHelper
+    .getUsers()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(err => {
+      res.status(500).json(err.message);
+    });
+});
+
+router.get("/users/:id", (req, res) => {
+  dbHelper
+    .getUser(req.params.id)
+    .then(user => {
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({
+          message: `user with id # ${
+            req.params.id
+          } was not found in the database`
+        });
       }
     })
     .catch(err => {
