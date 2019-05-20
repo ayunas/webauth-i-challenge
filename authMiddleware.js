@@ -24,4 +24,33 @@ function authenticate(req, res, next) {
   }
 }
 
-module.exports = authenticate;
+function authenticateUser(req, res, next) {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  const id = req.params.id;
+
+  if (username && password) {
+    dbHelper
+      .getUser(id)
+      .then(user => {
+        if (user && encrypt.compareSync(password, user.password)) {
+          console.log(typeof id, id, typeof String(user.id), user.id);
+          if (id == user.id) {
+            //did loose equality to account for different types
+            next();
+          } else {
+            res.status(401).json({ message: "Unauthorized User" });
+          }
+        } else {
+          res.status(401).json({ message: "Invalid Credentials" });
+        }
+      })
+      .catch(err => {
+        res.status(500).json(err.message);
+      });
+  } else {
+    res.status(400).json({ message: "No credentials provided" });
+  }
+}
+
+module.exports = { authenticate, authenticateUser };

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const dbHelper = require("./dbHelper");
 const encrypt = require("bcryptjs");
-const authenticate = require("./authMiddleware");
+const auth = require("./authMiddleware");
 
 router.get("/", (req, res) => {
   res.status(200).json({ message: "the router is working" });
@@ -42,7 +42,7 @@ router.post("/login", (req, res) => {
     });
 });
 
-router.get("/users", authenticate, (req, res) => {
+router.get("/users", auth.authenticate, (req, res) => {
   dbHelper
     .getUsers()
     .then(users => {
@@ -53,7 +53,7 @@ router.get("/users", authenticate, (req, res) => {
     });
 });
 
-router.get("/users/:id", (req, res) => {
+router.get("/users/:id", auth.authenticateUser, (req, res) => {
   dbHelper
     .getUser(req.params.id)
     .then(user => {
