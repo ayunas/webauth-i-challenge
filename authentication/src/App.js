@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import Login from "./Login";
+import Users from "./Users";
 import axios from "axios";
 
 class App extends React.Component {
@@ -54,6 +55,7 @@ class App extends React.Component {
         <div className="App-header">
           <header>Welcome to Authenticator</header>
           <Login login={this.login} register={this.register} />
+          <Users />
         </div>
       </div>
     );

@@ -11,6 +11,16 @@ function getUser(userID) {
 }
 
 function register(newUser) {
+  console.log("%cnewuser", "color:blue; font-size:16px;", newUser);
+  // return db("users")
+  //   .where({ username: newUser.username })
+  //   .then(id => {
+  //     res.status(404).json({ message: `${res} username taken` });
+  //   })
+  //   .catch(() => {
+  //     return db("users").insert(newUser);
+  //   });
+
   return db("users").insert(newUser);
 }
 

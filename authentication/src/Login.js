@@ -21,6 +21,7 @@ export default class Login extends Component {
   };
 
   clearInput = e => {
+    console.log("%c clearInput triggered!", "font-size:16px; color: violet");
     e.preventDefault();
     this.setState({
       username: "",
@@ -30,7 +31,7 @@ export default class Login extends Component {
 
   render() {
     return (
-      <form onSubmit={this.clearInput}>
+      <form onSubmit={() => this.clearInput()}>
         <input
           name="username"
           value={this.state.username}

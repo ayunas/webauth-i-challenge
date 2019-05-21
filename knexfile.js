@@ -6,14 +6,14 @@ module.exports = {
     connection: {
       filename: "./data/authentication.sqlite3" //knex assumes you are working from the root directory of the project
     },
-    useNullAsDefault: true,
+    useNullAsDefault: true
 
-    migrations: {
-      directory: "./data/migrations"
-    },
+    // migrations: {
+    //   directory: "./data/migrations"
+    // },
 
-    seeds: {
-      directory: "./data/seeds"
-    }
+    // seeds: {
+    //   directory: "./data/seeds"
+    // }
   }
 };
