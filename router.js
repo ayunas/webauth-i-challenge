@@ -9,9 +9,14 @@ router.get("/", (req, res) => {
 });
 
 router.post("/register", (req, res) => {
-  const user = req.body;
-  const hash = encrypt.hashSync(user.password, 10);
-  user.password = hash;
+  const hash = encrypt.hashSync(req.headers.password, 10);
+  req.session.username = req.headers.username;
+  req.session.password = hash;
+
+  const user = {
+    username: req.session.username,
+    password: req.session.password
+  };
 
   dbHelper
     .register(user)
@@ -23,46 +28,30 @@ router.post("/register", (req, res) => {
     });
 });
 
-// router.post("/login", auth.authenticate, (req, res) => {
-//   const username = req.body.username;
-//   const password = req.body.password;
-
-//   dbHelper
-//     .login(username)
-//     .first()
-//     .then(user => {
-//       if (user && encrypt.compareSync(password, user.password)) {
-//         res.status(200).json({ message: `Welcome, ${user.username}` });
-//       } else {
-//         res.status(401).json({ message: "Invalid Credentials" });
-//       }
-//     })
-//     .catch(err => {
-//       res.status(500).json(err.message);
-//     });
-// });
-
 router.post("/login", auth.authenticate, (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  dbHelper
-    .login(username)
-    .first()
-    .then(user => {
-      if (user && encrypt.compareSync(password, user.password)) {
-        req.session.user = user; //how does this session object look like?
-        res.status(200).json({ message: `Welcome ${user.username}` });
-      } else {
-        res.status(401).json({ message: "Invalid Credentials" });
-      }
-    })
-    .catch(error => {
-      res.status(500).json(error.message);
+  // const username = req.headers.username;
+  if (req.session && req.session.username) {
+    res.status(200).json({
+      message: `Welcome, ${req.session.username}, you now have a cookie`
     });
+  }
 });
 
-router.get("/users", auth.authenticate, (req, res) => {
+router.get("/logout", (req, res) => {
+  if (req.session) {
+    req.session.destroy(err => {
+      if (err) {
+        res.send("you can checkout anytime, but you can never leave");
+      } else {
+        res.send("bye");
+      }
+    });
+  } else {
+    res.end();
+  }
+});
+
+router.get("/users", auth.userRequest, (req, res) => {
   dbHelper
     .getUsers()
     .then(users => {
@@ -91,5 +80,25 @@ router.get("/users/:id", auth.authenticateUser, (req, res) => {
       res.status(500).json(err.message);
     });
 });
+
+// router.post("/login", auth.authenticate, (req, res) => {
+//   const username = req.body.username;
+//   const password = req.body.password;
+
+//   dbHelper
+//     .login(username)
+//     .first()
+//     .then(user => {
+//       if (user && encrypt.compareSync(password, user.password)) {
+//         req.session.user = user; //how does this session object look like?
+//         res.status(200).json({ message: `Welcome ${user.username}` });
+//       } else {
+//         res.status(401).json({ message: "Invalid Credentials" });
+//       }
+//     })
+//     .catch(error => {
+//       res.status(500).json(error.message);
+//     });
+// });
 
 module.exports = router;
