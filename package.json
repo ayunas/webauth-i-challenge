@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "connect-dynamodb": "^2.0.3",
     "connect-session-knex": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
